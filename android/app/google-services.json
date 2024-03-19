@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "379284442293",
+    "project_id": "routewatche-rerun",
+    "storage_bucket": "routewatche-rerun.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:379284442293:android:cb11f3901ecf42bfd082fc",
+        "android_client_info": {
+          "package_name": "com.routewatcheapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "379284442293-pdctsi2o9d6tqi924fnk5uujssof02df.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.routewatcheapp",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "379284442293-2kjgcge5knd4iasu93nblsk5liitc424.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAu7_P4mlFkA4_w7qitR4dY_UZxKAdvGw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "379284442293-2kjgcge5knd4iasu93nblsk5liitc424.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

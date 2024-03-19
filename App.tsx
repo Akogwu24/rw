@@ -6,113 +6,87 @@
  */
 
 import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import auth from '@react-native-firebase/auth';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {ToastProvider} from 'react-native-toast-notifications';
+import {AuthProvider} from './src/context/AuthContext';
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+import {NativeBaseProvider, extendTheme} from 'native-base';
+import {MainAppEntry} from './src/app/MainAppEntry';
+import {NavigationContainer} from '@react-navigation/native';
+import {navigationRef} from './src/navigation/RootNavigation';
+import Happy from 'react-native-vector-icons/Entypo';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+GoogleSignin.configure({
+  webClientId:
+    '379284442293-2kjgcge5knd4iasu93nblsk5liitc424.apps.googleusercontent.com',
+  iosClientId:
+    '379284442293-pvgq7o2u2dcur4nvfvngvuvajh8et990.apps.googleusercontent.com',
+});
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
-
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+const theme = extendTheme({
+  colors: {
+    primary: '#2E007F',
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+  fonts: {},
+  brand: {
+    200: '#2E007F',
   },
 });
+
+type CustomThemeType = typeof theme;
+
+declare module 'native-base' {
+  interface ICustomTheme extends CustomThemeType {}
+}
+
+const queryClient = new QueryClient();
+
+function App() {
+  async function onGoogleButtonPress() {
+    try {
+      // Check if your device supports Google Play
+      await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
+      // Get the users ID token
+      const {idToken} = await GoogleSignin.signIn();
+
+      // Create a Google credential with the token
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      console.log('suceesful sign in', googleCredential);
+      // Sign-in the user with the credential
+      return auth().signInWithCredential(googleCredential);
+    } catch (error) {
+      console.log('google error', error);
+    }
+  }
+  return (
+    <SafeAreaProvider>
+      <ToastProvider
+        placement="top"
+        swipeEnabled={true}
+        successColor="rgba(222, 242, 213, 1)"
+        successIcon={<Entypo name="emoji-happy" size={24} color="green" />}
+        dangerColor="rgba(234, 200, 196, 1)"
+        dangerIcon={<Entypo name="block" size={24} color="red" />}
+        warningColor="rgba(247, 243, 214, 1)"
+        warningIcon={
+          <AntDesign name="warning" size={24} color="rgba(138, 122, 77, 1)" />
+        }>
+        <AuthProvider>
+          <QueryClientProvider client={queryClient}>
+            <NativeBaseProvider theme={theme}>
+              <NavigationContainer ref={navigationRef}>
+                <MainAppEntry />
+                {/* <Toast /> */}
+              </NavigationContainer>
+            </NativeBaseProvider>
+          </QueryClientProvider>
+        </AuthProvider>
+      </ToastProvider>
+    </SafeAreaProvider>
+  );
+}
 
 export default App;
