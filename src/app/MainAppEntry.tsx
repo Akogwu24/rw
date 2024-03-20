@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 // import { PublicApp } from './PublicApp';
 // import { useAuth } from '../context/AuthContext';
 import { StatusBar } from 'react-native';
-import { Box, Button, Text, View } from 'native-base';
+import { Button, Text, View } from 'native-base';
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin';
 
 export const MainAppEntry = () => {
